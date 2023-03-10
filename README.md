@@ -30,7 +30,7 @@ BelayMe connects climbers based on their level, location, gender and schedule.
 
 - Account authentication & verification
 - User can select multiple levels and genders in preferences
-- User can specify time of day  (i.e. morning, lunch, afternoon, evening) in preferences
+- User can specify time of day (i.e. morning, lunch, afternoon, evening) in preferences
 - User can add pre-defined interest categories/tags to profile
 - User can send/accept contact request
 - User can message once contact request accepted
@@ -61,7 +61,7 @@ BelayMe connects climbers based on their level, location, gender and schedule.
 - Description: Gets all users
 - Req Body: N/A
 - Res Obj: {uID: integer, firstname: string, lastname: string, email: string,
-username: string, pronouns: string, avatar: url, bio: string, location: string, top: Boolean, lead: Boolean, level: string}
+  username: string, pronouns: string, avatar: url, bio: string, location: string, top: Boolean, lead: Boolean, level: string}
 
 #### Route 2
 
@@ -69,15 +69,15 @@ username: string, pronouns: string, avatar: url, bio: string, location: string, 
 - METHOD: GET
 - Description: Gets user info by id
 - Req Body: N/A
-- Res Obj: {uID: integer, firstname: string, lastname: string, email: string, username: string, pronouns: string, avatar: url, bio: string,  location: string, top: Boolean, lead: Boolean, level: string, gender: string}
+- Res Obj: {uID: integer, firstname: string, lastname: string, email: string, username: string, pronouns: string, avatar: url, bio: string, location: string, top: Boolean, lead: Boolean, level: string, gender: string}
 
 #### Route 3
 
 - URL: "/users"
 - METHOD: POST
 - Description: Adds new user to db
-- Req Body {username: string, pronouns: string, avatar: url, bio: string,  location: string, tope: Boolean, lead: boolean, level: string, gender: string}
-- Res Obj: {ID: integer, firstname: string, lastname: string, email: string, username: string, pronouns: string, avatar: url, bio: string,  location: string, top: Boolean, lead: Boolean, level: string, gender: string}
+- Req Body {username: string, pronouns: string, avatar: url, bio: string, location: string, tope: Boolean, lead: boolean, level: string, gender: string}
+- Res Obj: {ID: integer, firstname: string, lastname: string, email: string, username: string, pronouns: string, avatar: url, bio: string, location: string, top: Boolean, lead: Boolean, level: string, gender: string}
 
 #### Route 4
 
@@ -85,7 +85,7 @@ username: string, pronouns: string, avatar: url, bio: string, location: string, 
 - METHOD: PUT
 - Description: Edits user info in db
 - Req Body {username: string, pronouns: string, avatar: url, bio: string, location: string, top: Boolean, lead: boolean, level: string, gender: string}
-- Res Obj: {uID: integer, firstname: string, lastname: string, email: string, username: string, pronouns: string, avatar: url, bio: string,  location: string, top: Boolean, lead: Boolean, level: string, gender: string}
+- Res Obj: {uID: integer, firstname: string, lastname: string, email: string, username: string, pronouns: string, avatar: url, bio: string, location: string, top: Boolean, lead: Boolean, level: string, gender: string}
 
 #### Route 5
 
@@ -93,7 +93,7 @@ username: string, pronouns: string, avatar: url, bio: string, location: string, 
 - METHOD: POST
 - Description: Gets recommended users based on matching criteria in Req Body
 - Req Body: {location, top, lead, level, days, gender }
-- Res Obj: {uID: integer, firstname: string, lastname: string, email: string, username: string, pronouns: string, avatar: url, bio: string,  location: string, top: Boolean, lead: Boolean, level: string, gender: string}
+- Res Obj: {uID: integer, firstname: string, lastname: string, email: string, username: string, pronouns: string, avatar: url, bio: string, location: string, top: Boolean, lead: Boolean, level: string, gender: string}
 
 #### Route 6
 
@@ -140,16 +140,20 @@ TABLE 'days'
 - Access the MySQL interface in terminal by running `mysql -u root -p`
 - Create a new database called users: `create database users`
 - Add a `.env` file to the climbing-app folder of this repo containing MySQL authentication information:
-  - DB_HOST=localhost
-  - DB_USER=root
-  - DB_NAME=users
-  - DB_PASS=YOURPASSWORD
 
-- Run `npm run migrate` in the `climbing-app` folder in a new terminal window. This will create the 'user_info' and 'days' tables in your database.**
+```
+  DB_HOST=localhost
+  DB_USER=root
+  DB_NAME=users
+  DB_PASS=YOURPASSWORD
+
+```
+
+- Run `npm run migrate` in the `climbing-app` folder in a new terminal window. This will create the 'user_info' and 'days' tables in your database.\*\*
 
 - In MySQL interface, run `use users` followed by the commands contained in `days.sql` and `user_info.sql` files in the `model` folder. This will populate user_info and days tables with 'fake' user information.
 
-**If npm run migrate doesn't work, seperate instructions are in days.sql and user_info.sql to set-up tables directly via MySQL interface.
+\*\*If npm run migrate doesn't work, seperate instructions are in days.sql and user_info.sql to set-up tables directly via MySQL interface.
 
 ### External API Prep
 
