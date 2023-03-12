@@ -1,66 +1,57 @@
-import React from "react";
-import "../App.css"
+import React from 'react';
+import '../App.css';
 
-function Profile( {location, navigate, settings, getRecommendations}) {
+function Profile({ location, navigate, settings, getRecommendations }) {
+	//Fetches recommended climbers from db and sets 'recommendations []'
+	//Switches to myMatches vuew where user sees recommendations
+	const findPartners = () => {
+		getRecommendations();
+		navigate('/matches');
+	};
 
-//Fetches recommended climbers from db and sets 'recommendations []'
-//Switches to myMatches vuew where user sees recommendations 
-const findPartners = () => {
-    getRecommendations()
-    navigate("/matches")
-  }
+	return (
+		<div className="bg-2 d-flex justify-content-center align-items-center">
+			<div className="card">
+				<div className="user text-center">
+					<div className="profile">
+						<img
+							src={settings.avatar}
+							alt="profile_avatar"
+							className="rounded-circle"
+							width="100"
+						/>
+					</div>
+				</div>
 
-  return (
+				<div className="mt-5 text-center">
+					<h4 className="p-2 mb-0"> {settings.username} </h4>
+					<span className="d-block mb-2"> {settings.pronouns}</span>
 
-<div className="bg-2 d-flex justify-content-center align-items-center">
-       
-  <div 
-    className="card">
+					<button
+						className="btn btn-warning btn-sm follow"
+						onClick={findPartners}>
+						Get Matched
+					</button>
 
-    <div className="user text-center">
-     <div className="profile">
-      <img 
-        src={settings.img} 
-        alt="profile_avatar"
-        className="rounded-circle" 
-        width="100"/>
-    </div>
-   </div>
+					<div className="d-flex justify-content-between align-items-center mt-4 px-4">
+						<span className="bio col-12 text-center">{settings.bio}</span>
+					</div>
 
-  <div className="mt-5 text-center">
-   <h4 className="p-2 mb-0"> {settings.userName} </h4>
-   <span className="d-block mb-2"> {settings.pronouns}</span>
+					<div className="d-flex justify-content-between align-items-center mt-4 px-4">
+						<div className="stats">
+							<h6 className="mb-0"> Location </h6>
+							<span> {location}</span>
+						</div>
 
-   <button 
-   className="btn btn-warning btn-sm follow"
-   onClick={findPartners}>
-    Get Matched
-   </button>
-
-   <div className="d-flex justify-content-between align-items-center mt-4 px-4">
-       <span className="bio col-12 text-center">{settings.bio}
-      </span>
-   </div>
-
-   <div className="d-flex justify-content-between align-items-center mt-4 px-4">
-     <div className="stats">
-       <h6 className="mb-0"> Location </h6>
-       <span> {location}
-       </span>
-     </div>
-
-     <div className="stats">
-       <h6 className="mb-0"> Level </h6>
-       <span> {settings.level} 
-       </span>
-     </div>
-    
-     </div>
-
-</div>
-</div> 
-</div>
-  );
+						<div className="stats">
+							<h6 className="mb-0"> Level </h6>
+							<span> {settings.level}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default Profile;

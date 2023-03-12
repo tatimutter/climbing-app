@@ -1,11 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Signup from './Signup';
+import axios from 'axios';
 
-function Login() {
-	const [isSignup, setSignup] = useState(false);
+function Login({ setSignup }) {
+	// const [isSignup, setSignup] = useState(false);
 	const [isLogin, setLogin] = useState(true);
 	const navigate = useNavigate();
+
+	const [credentials, setCredentials] = useState({
+		username: '',
+		password: '',
+	});
+
+	const [error, setError] = useState('');
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setCredentials({ ...credentials, [name]: value });
+	};
+
+	const login = async () => {
+		try {
+			let options = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(credentials),
+			};
+			const result = await fetch('login', options);
+			const data = await result.json();
+			if (!result.ok) setError(data.error);
+			else {
+				//store token locally
+				localStorage.setItem('token', data.token);
+				//redirect to private page
+				navigate('/private');
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	const [signupValues, setSignupValues] = useState({
 		name: '',
@@ -20,13 +54,13 @@ function Login() {
 
 	const handleLoginSubmit = (e) => {
 		e.preventDefault();
-		navigate('/:id');
+		//	navigate('/:id');
 	};
 
-	const handleSignupSubmit = (e) => {
+	/* const handleSignupSubmit = (e) => {
 		e.preventDefault();
 		navigate('/:id');
-	};
+	}; */
 
 	const handleInputChange = (event) => {
 		const value = event.target.value;
@@ -38,7 +72,18 @@ function Login() {
 		}));
 	};
 
-	console.log(signupValues);
+	useEffect(() => {
+		setSignupValues((state) => ({
+			...state,
+		}));
+		// setPreferences((state) => ({
+		// 	...state,
+		// }));
+		// getRecommendations(); //Makes sure myMatches is not empty when first loading.
+		// //Matched based on default values preferences {}, days [] & location.
+		// getLocation(); // sets "active user" geolocation when first loading
+		// navigate('/'); //nagivates to homescreen when first loading.
+	}, []);
 
 	const showSignup = () => {
 		setSignup(true);
@@ -59,64 +104,56 @@ function Login() {
 				<div>
 					<form className="loginForm" onSubmit={handleLoginSubmit}>
 						<h2>Login</h2>
-						<div className="form_error">
+						{/* <div className="form_error">
 							Incorrect username/password combination
-						</div>
+						</div> */}
 						<div className="htmlForm-group">
-							<label htmlFor="exampleInputEmail1">Email address</label>
+							<label htmlFor="exampleInputEmail1">Username</label>
 							<input
-								type="email"
+								value={credentials.username}
+								type="text"
+								name="username"
+								onChange={handleChange}
 								className="htmlForm-control"
-								id="exampleInputEmail1"
+								id="inputUsername"
 								autoFocus
 								required
-								aria-describedby="emailHelp"
-								placeholder="Enter email"></input>
-							onChange={(e) => handleInputChange(e)}
+								placeholder="Enter username"></input>
 						</div>
 						<div className="htmlForm-group">
-							<label htmlFor="exampleInputPassword1">Password</label>
+							<label htmlFor="inputPassword1">Password</label>
 							<input
 								type="password"
 								className="htmlForm-control"
-								id="exampleInputPassword1"
+								value={credentials.password}
+								onChange={handleChange}
+								name="password"
+								id="inputPassword"
 								required
 								autoFocus
 								placeholder="Password"></input>
-							onChange={(e) => handleInputChange(e)}
 						</div>
-						{/* <div className="htmlForm-check">
-							<input
-								type="checkbox"
-								className="htmlForm-check-input"
-								id="exampleCheck1"></input>
-							<label className="htmlForm-check-label" htmlFor="exampleCheck1">
-								Check me out
-							</label>
-						</div> */}
-						<button type="submit" className="btn btn-primary">
+
+						<button type="submit" className="btn btn-primary" onClick={login}>
 							Log in
 						</button>
+
+						{error}
 					</form>
 
 					{/* sign up form only appears when I click on 'Don't have account */}
 					<p class="toCreateAccount">
 						<span>Don't have an account yet?</span>
 					</p>
+
 					<button
 						className="btn btn-trasnparent signupBtn"
 						onClick={showSignup}>
 						Create one!
 					</button>
-
-					{/* <p class="toCreateAccount">
-					<NavLink to="/signup" className="formLink" id="linkCreateAccount">
-						Create one!
-					</NavLink>
-				</p> */}
 				</div>
 			)}
-			{isSignup && (
+			{/* {isSignup && (
 				<div>
 					<form className="signupForm" onSubmit={handleSignupSubmit}>
 						<h2>Create account</h2>
@@ -167,7 +204,7 @@ function Login() {
 									onChange={(e) => handleInputChange(e)}></input>
 							</div>
 						</div>
-						{/* password needs to have some conditions to be accepted */}
+						
 						<div className="form-group">
 							<label htmlFor="inputPassword4">Password</label>
 							<input
@@ -180,16 +217,7 @@ function Login() {
 								onChange={(e) => handleInputChange(e)}></input>
 						</div>
 
-						{/* <div className="form-group">
-                <label htmlFor="inputAddress">Address</label>
-                <input
-                type="text"
-                className="form-control"
-                id="inputAddress"
-                placeholder="1234 Main St"></input>
-                </div> */}
-
-						<div className="form-row">
+												<div className="form-row">
 							<div className="form-group col-md-6">
 								<label htmlFor="inputCity">City</label>
 								<input
@@ -230,7 +258,7 @@ function Login() {
 						</button>
 					</form>
 				</div>
-			)}
+			)} */}
 		</>
 	);
 }

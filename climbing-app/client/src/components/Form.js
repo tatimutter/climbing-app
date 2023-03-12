@@ -1,7 +1,9 @@
 import React from 'react';
+import { useRoutes, Navigate } from 'react-router-dom';
 import '../App.css';
 
-function Settings({
+function Form({
+	handleSubmit,
 	location,
 	setLocation,
 	daysOfWeek,
@@ -11,6 +13,7 @@ function Settings({
 	days,
 	setDays,
 	setChecked,
+	saveSettings,
 }) {
 	//updates props in 'settings {}'
 	const handleInputChange = (event) => {
@@ -52,7 +55,7 @@ function Settings({
 		);
 		console.log(days);
 	};
-
+	/* //Created with Vicky
 	async function saveSettings(id) {
 		let options = {
 			method: 'PUT',
@@ -71,14 +74,35 @@ function Settings({
 		} catch (err) {
 			console.log(`Server error: ${err.message}`);
 		}
-	}
+	} */
 
-	const handleSubmit = (e) => {
+	//Trying to create function to add new user
+	/* 	async function addUser() {
+		let options = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(settings),
+		};
+
+		try {
+			let response = await fetch(`/users`, options); // do PUT
+			if (response.ok) {
+				let users = await response.json();
+				console.log('user added');
+			} else {
+				console.log(`Server error: ${response.status} ${response.statusText}`);
+			}
+		} catch (err) {
+			console.log(`Server error: ${err.message}`);
+		}
+	}
+ */
+	/* const handleSubmit = (e) => {
 		e.preventDefault();
-		//getRecommendations()
+		addUser();
 		saveSettings(settings.id);
 		navigate('/profile');
-	};
+	}; */
 
 	return (
 		<div className="bg-1 p-4 d-flex justify-content-center text-left">
@@ -88,8 +112,8 @@ function Settings({
 						<label> First name </label>
 						<input
 							type="text"
-							name="firstName"
-							value={settings.firstName}
+							name="firstname"
+							value={settings.firstname}
 							placeholder="Type first name"
 							className="form-control"
 							onChange={(e) => handleInputChange(e)}
@@ -100,8 +124,8 @@ function Settings({
 						<label> Last name </label>
 						<input
 							type="text"
-							name="lastName"
-							value={settings.lastName}
+							name="lastname"
+							value={settings.lastname}
 							placeholder="Type last name"
 							className="form-control"
 							onChange={(e) => handleInputChange(e)}
@@ -111,7 +135,7 @@ function Settings({
 
 				<div className="form-row px-2">
 					<div className="form-group col-md-6 px-2">
-						<label> User name </label>
+						<label> Username </label>
 						<input
 							type="text"
 							name="username"
@@ -149,16 +173,16 @@ function Settings({
 					</div>
 
 					{/* <div className="form-group col-md-6 px-2">
-						<label> Location </label>
-						<input
-							type="text"
-							name="location"
-							value={settings.location}
-							placeholder="Set location"
-							className="form-control"
-							onChange={(e) => handleInputChange(e)}
-						/>
-					</div> */}
+          <label> Location </label>
+          <input
+            type="text"
+            name="location"
+            value={settings.location}
+            placeholder="Set location"
+            className="form-control"
+            onChange={(e) => handleInputChange(e)}
+          />
+          </div>*/}
 
 					<div className="form-group col-md-6 px-2">
 						<label> Location </label>
@@ -259,4 +283,4 @@ function Settings({
 	);
 }
 
-export default Settings;
+export default Form;

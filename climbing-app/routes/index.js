@@ -1,6 +1,15 @@
 var express = require('express');
 var router = express.Router();
 const db = require('../model/helper');
+require('dotenv').config();
+var jwt = require('jsonwebtoken');
+var loggedInUser = require('../guards/loggedInUser');
+const supersecret = process.env.SUPER_SECRET;
+
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+//TRY AND PUT USERS ROUTES INTO USERS.JS?
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -29,13 +38,45 @@ router.get('/users/:id', async function (req, res, next) {
 	}
 });
 
-/* WILL I HAVE TO MODIFY THIS ONE? OR WILL I HAVE TO CREATE A POST/GET FOR LOGIN? */
+/* Route AUTH -  */
+router.post('/login', async (req, res) => {
+	const { username, password } = req.body;
+
+	try {
+		const results = await db(
+			`SELECT * FROM user_info WHERE username = "${username}"`
+		);
+		const user = results.data[0];
+		if (user) {
+			const user_id = user.id;
+
+			const correctPassword = await bcrypt.compare(password, user.password);
+
+			if (!correctPassword) throw new Error('Incorrect password');
+
+			var token = jwt.sign({ user_id }, supersecret);
+			res.send({ message: 'Login successful, here is your token', token });
+		} else {
+			throw new Error('User does not exist');
+		}
+	} catch (err) {
+		res.status(400).send({ message: err.message });
+	}
+});
+
+router.get('/private', loggedInUser, (req, res) => {
+	res.status(200).send({
+		message: 'Here is the PROTECTED data for user ' + req.user_id,
+	});
+});
+
 /*Route 3 - POST new user*/
-router.post('/users', async function (req, res, next) {
+router.post('/register', async function (req, res, next) {
 	const {
 		firstname,
 		lastname,
 		username,
+		password,
 		email,
 		pronouns,
 		avatar,
@@ -46,11 +87,14 @@ router.post('/users', async function (req, res, next) {
 		gender,
 	} = req.body;
 	try {
+		/* Adding hash to encrypt password */
+		const hash = await bcrypt.hash(password, saltRounds);
+
 		await db(
 			`INSERT INTO user_info 
-      (firstname, lastname, username, email, pronouns, avatar, bio, location, level, top, gender) 
-       VALUES ("${firstname}","${lastname}","${username}","${email}","${pronouns}","${avatar}","${bio}","${location}",
-       "${level}","${top}", "${gender}");`
+      (firstname, lastname, username, password, email, pronouns, avatar, bio, location, level, top, gender) 
+       VALUES ("${firstname}","${lastname}","${username}", "${hash}", "${email}","${pronouns}","${avatar}","${bio}","${location}",
+       "${level}",${top}, "${gender}");`
 		);
 		let results = await db(`SELECT * FROM user_info ORDER BY uID ASC;`);
 		res.status(200).send(results.data);
