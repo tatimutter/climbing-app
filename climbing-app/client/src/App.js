@@ -22,8 +22,45 @@ function App() {
 	//Setsdays "active user" wants to climb based on daysOfWeek []. daysOfWeeks gets modified in Preferences & Settings forms
 	const [location, setLocation] = useState('');
 	const [isSignup, setSignup] = useState(false);
+	const [isLogin, setLogin] = useState(false);
+
 	//setsLocation "active user" profile.
 	const navigate = useNavigate();
+
+	//THIS COMING FROM /PRIVATE
+	const [message, setMessage] = useState('');
+
+	useEffect(() => {
+		requestData();
+	}, []);
+
+	const requestData = async () => {
+		let options = {
+			headers: {
+				authorization: 'Bearer ' + localStorage.getItem('token'),
+			},
+		};
+
+		try {
+			const result = await fetch('private', options);
+			const data = await result.json();
+
+			if (!result.ok) setMessage(data.error);
+			else setMessage(data.message);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const deactivateLogin = () => {
+		setLogin(false);
+	};
+
+	const logout = () => {
+		localStorage.removeItem('token');
+		navigate('/');
+		deactivateLogin();
+	};
 
 	//"active user" default settings. Displayed on Profile page
 	const [settings, setSettings] = useState({
@@ -31,6 +68,7 @@ function App() {
 		firstname: '',
 		lastname: '',
 		username: '',
+		password: '',
 		email: '',
 		gender: '',
 		pronouns: '',
@@ -84,6 +122,9 @@ function App() {
 			.catch((err) => console.error(err));
 	};
  */
+
+	const [error, setError] = useState('');
+
 	//Created with Vicky
 	async function saveSettings(id) {
 		let options = {
@@ -166,37 +207,9 @@ function App() {
 
 	let activeClassName = 'btn btn-sm btn-warning';
 
-	/* 
-	TRIED TO USE USEROUTS TO RENDER FORM ELEMENT IN TWO DIFFERENT ROUTES WITH DIFFERENT HANDLESUBMIT EVENTS
-	const routes = useRoutes([
-		{
-			path: '/settings',
-			element: (
-				<Form
-					handleSubmit={() =>
-						//define handlesubmit for settings (PUT)
-						(e) => {
-							e.preventDefault();
-
-							saveSettings(settings.id);
-							navigate('/profile');
-							console.log('submitting routeSettings');
-						}}
-				/>
-			),
-		},
-		{
-			path: '/login',
-			element: (
-				<Form
-					handleSubmit={() =>
-						//define handlesubmit for signup (POST)
-						console.log('submitting routeLogin')
-					}
-				/>
-			),
-		},
-	]); */
+	const activateLogin = () => {
+		setLogin(true);
+	};
 
 	return (
 		<div className="main container-fluid text-center">
@@ -214,7 +227,7 @@ function App() {
 				</div>
 
 				<nav className="nav navbar nav-masthead p-2">
-					<div className="align-self-start">
+					{/* 	<div className="align-self-start">
 						<NavLink
 							to="/settings"
 							className={({ isActive }) =>
@@ -224,65 +237,9 @@ function App() {
 								settings
 							</span>
 						</NavLink>
-					</div>
+					</div> */}
 
-					<div className="align-self-start m-2 p-1">
-						<NavLink
-							to="/login"
-							className={({ isActive }) =>
-								isActive ? activeClassName : undefined
-							}>
-							<button className="text-white btn m-1">Log in/Sign up</button>
-						</NavLink>
-					</div>
-
-					<div className="align-self-center">
-						<NavLink
-							to="/preferences"
-							className={({ isActive }) =>
-								isActive ? activeClassName : undefined
-							}>
-							<button className="text-white btn m-1">myPreferences</button>
-						</NavLink>
-
-						<NavLink
-							to="/profile"
-							className={({ isActive }) =>
-								isActive ? activeClassName : undefined
-							}>
-							<button className="text-white btn m-1">myProfile </button>
-						</NavLink>
-
-						{/*Switches to different view AND fetches new recommendations*/}
-						<NavLink
-							to="/matches"
-							className={({ isActive }) =>
-								isActive ? activeClassName : undefined
-							}>
-							<button
-								onClick={() => getRecommendations}
-								className="text-white btn m-1">
-								myMatches{' '}
-							</button>
-						</NavLink>
-					</div>
-
-					{/* Log out button will appear ONLY after user logs in */}
-					<div className="align-self-right m-1">
-						<NavLink
-							to="/"
-							className={({ isActive }) =>
-								isActive ? activeClassName : undefined
-							}>
-							<button
-								// onClick={() => getRecommendations}
-								className="text-white btn m-1">
-								Log out{' '}
-							</button>
-						</NavLink>
-					</div>
-
-					<div className="align-self-right">
+					<div className="align-self-start">
 						<NavLink
 							to="/"
 							className={({ isActive }) =>
@@ -293,6 +250,59 @@ function App() {
 							</span>
 						</NavLink>
 					</div>
+					<div className="align-self-center">
+						{isLogin && (
+							<NavLink
+								to="/preferences"
+								className={({ isActive }) =>
+									isActive ? activeClassName : undefined
+								}>
+								<button className="text-white btn m-1">myPreferences</button>
+							</NavLink>
+						)}
+						{isLogin && (
+							<NavLink
+								to="/profile"
+								className={({ isActive }) =>
+									isActive ? activeClassName : undefined
+								}>
+								<button className="text-white btn m-1">myProfile </button>
+							</NavLink>
+						)}
+						{/*Switches to different view AND fetches new recommendations*/}
+						{isLogin && (
+							<NavLink
+								to="/matches"
+								className={({ isActive }) =>
+									isActive ? activeClassName : undefined
+								}>
+								<button
+									onClick={() => getRecommendations}
+									className="text-white btn m-1">
+									myMatches{' '}
+								</button>
+							</NavLink>
+						)}
+					</div>
+
+					<div className="align-self-right m-2 p-1">
+						{!isLogin && (
+							<NavLink
+								to="/login"
+								className={({ isActive }) =>
+									isActive ? activeClassName : undefined
+								}>
+								<button className="text-white btn m-1">Log in/Sign up</button>
+							</NavLink>
+						)}
+					</div>
+					{isLogin && (
+						<div className="align-self-right m-2 p-1">
+							<button onClick={logout} className="text-white btn m-1">
+								Log out{' '}
+							</button>
+						</div>
+					)}
 				</nav>
 			</div>
 
@@ -307,7 +317,6 @@ function App() {
 								//define handlesubmit for settings (PUT)
 								(e) => {
 									e.preventDefault();
-
 									saveSettings(settings.id);
 									navigate('/profile');
 									console.log('submitting routeSettings');
@@ -327,37 +336,43 @@ function App() {
 
 				{/* <Route path="/signup" element={<Signup />}></Route> */}
 
-				<Route
-					path="/login"
-					element={
-						!isSignup ? (
-							<Login setSignup={setSignup} />
-						) : (
-							<Form
-								handleSubmit={
-									//define handlesubmit for settings (PUT)
-									(e) => {
-										e.preventDefault();
+				<Route path="/login" element={<Login setLogin={setLogin} />}></Route>
 
-										addUser();
-										navigate('/profile');
-										console.log('submitting routeSettings');
-									}
+				<Route
+					path="/signup"
+					element={
+						<Form
+							handleSubmit={
+								//define handlesubmit for settings (PUT)
+								(e) => {
+									e.preventDefault();
+
+									addUser();
+									navigate('/profile');
+									activateLogin();
+									console.log('submitting routeSettings');
 								}
-								settings={settings}
-								setSettings={setSettings}
-								days={days}
-								setDays={setDays}
-								setChecked={setChecked}
-								navigate={navigate}
-								daysOfWeek={daysOfWeek}
-								location={location}
-								setLocation={setLocation}
-							/>
-						)
+							}
+							setLogin={setLogin}
+							settings={settings}
+							setSettings={setSettings}
+							days={days}
+							setDays={setDays}
+							setChecked={setChecked}
+							navigate={navigate}
+							daysOfWeek={daysOfWeek}
+							location={location}
+							setLocation={setLocation}
+						/>
 					}></Route>
 
-				<Route path="/private" element={<Private />}></Route>
+				<Route
+					path="/private"
+					element={
+						<Private
+						//
+						/>
+					}></Route>
 
 				<Route
 					path="/preferences"

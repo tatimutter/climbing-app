@@ -4,6 +4,7 @@ import '../App.css';
 
 function Form({
 	handleSubmit,
+	handleClick,
 	location,
 	setLocation,
 	daysOfWeek,
@@ -159,6 +160,18 @@ function Form({
 					</div>
 				</div>
 
+				<div className="form-group col-md-6 px-2">
+					<label> Password </label>
+					<input
+						type="password"
+						name="password"
+						value={settings.password}
+						placeholder="Choose a password"
+						className="form-control"
+						onChange={(e) => handleInputChange(e)}
+					/>
+				</div>
+
 				<div className="form-row px-2">
 					<div className="form-group col-md-6 px-2">
 						<label> Image </label>
@@ -276,7 +289,13 @@ function Form({
 				</div>
 
 				<div className="form-row justify-content-center p-3">
-					<button className="btn btn-m btn-warning">Submit</button>
+					<button
+						className="btn btn-m btn-warning"
+						type="submit"
+						/* onClick={handleClick} */
+					>
+						Submit
+					</button>
 				</div>
 			</form>
 		</div>

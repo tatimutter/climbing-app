@@ -2,8 +2,9 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Private() {
+function Private({ setLogin, logout }) {
 	const [message, setMessage] = useState('');
+
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -27,11 +28,14 @@ function Private() {
 			console.log(error);
 		}
 	};
+	/*  */
 
-	const logout = () => {
+	//MOVED THIS TO App.JS:
+	/* const logout = () => {
 		localStorage.removeItem('token');
 		navigate('/');
-	};
+		//	deactivateLogin();
+	}; */
 
 	return (
 		<div>
