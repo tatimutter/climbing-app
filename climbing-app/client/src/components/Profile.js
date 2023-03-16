@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../App.css';
 
-function Profile({ location, navigate, settings, getRecommendations }) {
+function Profile({ location, navigate, getRecommendations }) {
 	//Fetches recommended climbers from db and sets 'recommendations []'
 	//Switches to myMatches vuew where user sees recommendations
 	const findPartners = () => {
 		getRecommendations();
 		navigate('/matches');
 	};
-
+	const [settings, setSettings] = useState({});
+	useEffect(()=>{
+		getUserInfo();
+	}, [])
+	
+	async function getUserInfo() {
+		let results = await fetch(`/users/10`);
+		let user = await results.json();
+		console.log(user)
+		//if db query succesfull > sets featured user
+		setSettings(user[0])
+	}
+	console.log(settings);
+	
 	return (
 		<div className="bg-2 d-flex justify-content-center align-items-center">
 			<div className="card">
